@@ -1,3 +1,9 @@
+const ROUND_WIN = "win";
+const ROUND_LOSE = "lose";
+const ROUND_DRAW = "draw";
+const ROUND_INDETERMINATE = "indeterminate";
+const GAME_LENGTH = 5;  // in rounds
+
 /**
  * Randomly selects the hand sign that the computer throws out
  * (rock, paper, scissors).
@@ -23,11 +29,6 @@ function getComputerChoice() {
 function getHumanChoice() {
     return prompt("Rock, paper, scissors...").toLowerCase();
 }
-
-const ROUND_WIN = "win";
-const ROUND_LOSE = "lose";
-const ROUND_DRAW = "draw";
-const ROUND_INDETERMINATE = "indeterminate";
 
 let humanScore = 0;
 let computerScore = 0;
@@ -65,3 +66,58 @@ function playRound(humanChoice, computerChoice) {
         return ROUND_INDETERMINATE;
     }
 }
+
+/**
+ * Returns the current point counter in a formatted matter 
+ * of the player and computer in that order.
+ * @returns {string} The formatted score.
+ */
+function getCurrentPoints() {
+    return `(Human: ${humanScore}/ Computer: ${computerScore})`;
+}
+
+/**
+ * Begins the rock-paper-scissors game loop.
+ */
+function playGame() {
+    while (elapsedRounds < GAME_LENGTH) {
+        let humanChoice = getHumanChoice();
+        let computerChoice = getComputerChoice();
+        let result = playRound(humanChoice, computerChoice);
+
+        if (result === ROUND_WIN) {
+            humanScore++;
+            console.log(`Human wins round ${elapsedRounds + 1}! ` + getCurrentPoints());
+            
+        } else if (result === ROUND_LOSE) {
+            computerScore++;
+            console.log(`Computer wins round ${elapsedRounds + 1}! ` + getCurrentPoints());
+        } else if (result === ROUND_DRAW) {
+            console.log(`Round ${elapsedRounds + 1} ends in a draw! ` + getCurrentPoints());
+        } else {
+            console.log(`A winner could not be determined. Reattempting round ${elapsedRounds + 1}.`);
+        }
+
+        if (result !== ROUND_INDETERMINATE) {
+            elapsedRounds++;
+        }
+    }
+}
+
+/**
+ * Runs upon the completion of the game, tallying up final scores and
+ * printing the results into the console.
+ */
+function endGame() {
+    console.log("Final tallies: " + getCurrentPoints());
+    if (humanScore > computerScore) {
+        console.log("Human wins!");
+    } else if (humanScore < computerScore) {
+        console.log("Computer wins!");
+    } else {
+        console.log("It's a draw!");
+    }
+}
+
+playGame();
+endGame();
